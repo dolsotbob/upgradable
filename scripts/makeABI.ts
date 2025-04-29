@@ -14,7 +14,7 @@ const makeFile = async (
     '다음 경로에 abi파일을 만듭니다. : ',
     path.join(base, destination)
   );
-  const json = await fs.readFileSync(path.join(base, location), {
+  const json = fs.readFileSync(path.join(base, location), {
     encoding: 'utf-8',
   });
 

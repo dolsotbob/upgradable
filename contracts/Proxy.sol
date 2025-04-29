@@ -8,6 +8,9 @@ contract Proxy {
     using Address for address;
     using StorageSlot for bytes32;
 
+    // 이 코드는 학습용으로 슬롯을 직접 지정한 예제일 뿐이고,
+    // 실무에서는 이미 회사에서 정한 고정된 slot 주소값을 내려줘서 그걸 써야 함
+    // 외부에서 값을 주입해주어 지금 이 예시에서처럼 다 보이게 하지 않음 (보안 목적)
     bytes32 private constant IMPLEMENTATION_SLOT =
         bytes32(uint256(keccak256("inbrew.proxy")) - 1);
     bytes32 private constant ADMIN_SLOT =
@@ -61,6 +64,7 @@ contract Proxy {
         return StorageSlot.getAddressSlot(ADMIN_SLOT).value;
     }
 
+    // delegate call 은 유명한 함수로 쌤도 가져다 쓰심
     function _delegate(address impl) internal {
         assembly {
             calldatacopy(0, 0, calldatasize())
@@ -83,6 +87,7 @@ contract Proxy {
         _delegate(StorageSlot.getAddressSlot(IMPLEMENTATION_SLOT).value);
     }
 
+    // 투명화 업그레이드 패턴
     function upgrade(
         address newAddress
     ) public onlyAdmin isContract(newAddress) {
